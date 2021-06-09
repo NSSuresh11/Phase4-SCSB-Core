@@ -204,7 +204,7 @@ public class SubmitCollectionReportHelperService {
             List<SubmitCollectionReportInfo> submitCollectionReportInfoList = submitCollectionReportInfoIndividualMap.getValue();
             if(!submitCollectionReportInfoList.isEmpty()){
                 for(SubmitCollectionReportInfo submitCollectionReportInfo : submitCollectionReportInfoList){
-                    if(submitCollectionReportInfo.getItemBarcode().equals(barcode)){
+                    if((submitCollectionReportInfo.getItemBarcode() != null) && submitCollectionReportInfo.getItemBarcode().equals(barcode)){
                         return true;
                     }
                 }
@@ -216,7 +216,7 @@ public class SubmitCollectionReportHelperService {
     public boolean isBarcodeAlreadyAddedToReport(String barcode,List<SubmitCollectionReportInfo> submitCollectionReportInfoList){
             if(!submitCollectionReportInfoList.isEmpty()){
                 for(SubmitCollectionReportInfo submitCollectionReportInfo : submitCollectionReportInfoList){
-                    if(submitCollectionReportInfo.getItemBarcode().equals(barcode)){
+                    if((submitCollectionReportInfo.getItemBarcode() != null) && submitCollectionReportInfo.getItemBarcode().equals(barcode)){
                         return true;
                     }
                 }
@@ -321,8 +321,8 @@ public class SubmitCollectionReportHelperService {
                 submitCollectionReportInfo.setCustomerCode(existingItemEntity.getCustomerCode());
                 submitCollectionReportInfo.setItemBarcode(existingItemEntity.getBarcode());
                 submitCollectionReportInfo.setMessage(ScsbConstants.SUBMIT_COLLECTION_FAILED_RECORD + " - Owning institution holdings id mismatch - incoming owning institution holdings id " + incomingOwningInstHoldingsId + ", existing owning institution item id " + existingItemEntity.getOwningInstitutionItemId()
-                        + existingHoldingid + existingItemEntity.getHoldingsEntities().get(0).getOwningInstitutionHoldingsId() + existingBibid + existingItemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
-                failureSubmitCollectionReportInfoList.add(submitCollectionReportInfo);
+                        + existingHoldingid + (!existingItemEntity.getHoldingsEntities().isEmpty() ? existingItemEntity.getHoldingsEntities().get(0).getOwningInstitutionHoldingsId() : "NULL" )
+                        + existingBibid + (!existingItemEntity.getBibliographicEntities().isEmpty() ? existingItemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId() : "NULL"));
         }
     }
 
