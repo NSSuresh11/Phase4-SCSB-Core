@@ -122,8 +122,8 @@ public class SubmitCollectionReportHelperService {
         String fetchedOwningInstBibIds = notMatchedFetchedOwnInstBibId.stream().collect(Collectors.joining(","));
         submitCollectionReportInfo.setMessage(ScsbConstants.SUBMIT_COLLECTION_FAILED_RECORD+" - Owning institution bib id mismatch for bound-with item - incoming owning institution"
                 +"bib id "+incomingOwningInstBibIds+existingBibid+fetchedOwningInstBibIds
-                +existingHoldingid+fetchedItemEntity.getHoldingsEntities().get(0).getOwningInstitutionHoldingsId()+", existing owning"
-                +"institution item id "+fetchedItemEntity.getOwningInstitutionItemId());
+                +existingHoldingid+(!fetchedItemEntity.getHoldingsEntities().isEmpty() ? fetchedItemEntity.getHoldingsEntities().get(0).getOwningInstitutionHoldingsId() : "NULL")
+                +", existing owninginstitution item id "+fetchedItemEntity.getOwningInstitutionItemId());
         submitCollectionExceptionInfos.add(submitCollectionReportInfo);
     }
 
