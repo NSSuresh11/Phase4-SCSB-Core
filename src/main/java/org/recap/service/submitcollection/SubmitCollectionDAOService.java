@@ -403,12 +403,17 @@ public class SubmitCollectionDAOService {
         if (!updatedBibliographicEntityList.isEmpty()) {
             try {
                 saveUpdatedBibliographicEntityList(updatedBibliographicEntityList);
-                if (!itemChangeLogEntityList.isEmpty()){
-                    saveItemChangeLogEntityList(itemChangeLogEntityList);
-                }
             } catch (Exception e) {
                 logger.error("Exception while saving non bound with batch ");
                 logger.error(ScsbCommonConstants.LOG_ERROR,e);
+            }
+        }
+        if (!itemChangeLogEntityList.isEmpty()) {
+            try {
+                saveItemChangeLogEntityList(itemChangeLogEntityList);
+            } catch (Exception e) {
+                logger.error("Exception while saving itemChangeLogEntityList ");
+                logger.error(ScsbCommonConstants.LOG_ERROR, e);
             }
         }
     }
@@ -682,6 +687,7 @@ public class SubmitCollectionDAOService {
         List<ItemEntity> fetchedItemBasedOnOwningInstitutionItemId = submitCollectionReportHelperService.getItemBasedOnOwningInstitutionItemIdAndOwningInstitutionId(incomingBibliographicEntity.getItemEntities());
         boolean boundWith = isBoundWithItem(incomingBibliographicEntity,processedBarcodeSet);
         BibliographicEntity bibliographicEntityToSave = null;
+        boolean isBoundwithUpdated = false;
         if (fetchedItemBasedOnOwningInstitutionItemId.isEmpty() || boundWith) {//To check there should not be existing item record with same own item id and for bound with own item id can be different
             boolean isCheckCGDNotNull = checkIsCGDNotNull(incomingBibliographicEntity);
             if (isCheckCGDNotNull) {
@@ -701,6 +707,7 @@ public class SubmitCollectionDAOService {
                 }
                 savedBibliographicEntity = bibliographicEntityToSave;
                 bibliographicRepositoryDAO.saveOrUpdate(savedBibliographicEntity);
+                isBoundwithUpdated = true;
              //   entityManager.merge(savedBibliographicEntity);
               //  entityManager.flush();
 
@@ -714,6 +721,9 @@ public class SubmitCollectionDAOService {
             }
         } else if (!fetchedItemBasedOnOwningInstitutionItemId.isEmpty()) {
             submitCollectionReportHelperService.setSubmitCollectionReportInfoForInvalidDummyRecordBasedOnOwnInstItemId(incomingBibliographicEntity,submitCollectionReportInfoMap.get(ScsbConstants.SUBMIT_COLLECTION_FAILURE_LIST),fetchedItemBasedOnOwningInstitutionItemId);
+        }
+        if(isBoundwithUpdated) {
+            return null;
         }
         return savedBibliographicEntity;
     }
