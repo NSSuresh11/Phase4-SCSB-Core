@@ -417,8 +417,8 @@ public class SubmitCollectionDAOService {
         logger.info("updatedBibliographicEntityList size--->{}",updatedBibliographicEntityList.size());
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        bibliographicRepositoryDAO.saveOrUpdateList(updatedBibliographicEntityList);
-    //    repositoryService.getBibliographicDetailsRepository().flush();
+        repositoryService.getBibliographicDetailsRepository().saveAll(updatedBibliographicEntityList);
+        repositoryService.getBibliographicDetailsRepository().flush();
         stopWatch.stop();
         logger.info("Time taken to save {} bib size---->{} sec",updatedBibliographicEntityList.size(),stopWatch.getTotalTimeSeconds());
     }
